@@ -8,15 +8,8 @@ function required(name: string): string {
 
 export function supabaseAdmin(): SupabaseClient {
   return createClient(
-    required('NEXT_PUBLIC_SUPABASE_URL'),
-    required('SUPABASE_SERVICE_ROLE_KEY'),
+    required('SUPABASE_URL'),
+    required('SUPABASE_SECRET_KEY'),
     { auth: { persistSession: false, autoRefreshToken: false } },
-  );
-}
-
-export function supabaseBrowser(): SupabaseClient {
-  return createClient(
-    required('NEXT_PUBLIC_SUPABASE_URL'),
-    required('NEXT_PUBLIC_SUPABASE_ANON_KEY'),
   );
 }

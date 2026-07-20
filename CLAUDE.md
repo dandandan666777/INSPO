@@ -53,7 +53,7 @@ RSS feeds → cron → ingest into Postgres
 ## Phase tracker
 
 - [x] **Phase 1** — Skeleton: Next.js scaffold, CLAUDE.md, placeholder landing, Supabase client, `.env.local.example`
-- [ ] **Phase 2** — DB schema + seed sources (pgvector, `sources`/`items`, 5 seed feeds)
+- [x] **Phase 2** — DB schema + seed sources (pgvector, `sources`/`items`, 5 seed feeds)
 - [ ] **Phase 3** — RSS ingestion (`scripts/ingest-feed.ts`)
 - [ ] **Phase 4** — Image storage + resize (`scripts/download-images.ts`, sharp, R2)
 - [ ] **Phase 5** — CLIP embeddings (`lib/embeddings.ts`, `scripts/embed-items.ts`)
@@ -90,10 +90,11 @@ Post-MVP (only after ~200 WAU): magic-link auth, saves/collections, Stripe subsc
 
 ## Env vars (see `.env.local.example`)
 
-- `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
+- `SUPABASE_URL`, `SUPABASE_SECRET_KEY` — Supabase's modern (2025+) short-token key scheme. Server-only; v1 has no browser Supabase calls. Add `SUPABASE_PUBLISHABLE_KEY` when we introduce auth post-MVP.
 - `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`, `R2_PUBLIC_URL`
 - `REPLICATE_API_TOKEN`
 
 ## Session notes
 
 - **Session 1 (2026-07-20):** Phase 1 complete. Chose Next 16 (latest stable) over the brief's Next 15 — ecosystem moved on. Chose 768-dim embeddings (ViT-L/14 default) over the brief's 512. pnpm 11 requires approving `sharp` build scripts before Phase 4 (via `pnpm approve-builds` or `onlyBuiltDependencies` in `pnpm-workspace.yaml`).
+- **Session 1 (2026-07-20) cont'd:** Phase 2 complete. Migration in `supabase/migrations/0001_init.sql` applied via Supabase SQL editor. Seed script (`scripts/seed-sources.ts`) upserts 5 sources idempotently on `feed_url`. Adopted Supabase's modern (2025+) key scheme: `SUPABASE_URL` + `SUPABASE_SECRET_KEY` — no `NEXT_PUBLIC_` prefix because v1 has no client-side Supabase calls. Dropped unused `supabaseBrowser()` from `lib/supabase.ts`; re-add when introducing auth post-MVP. `pnpm run seed` is the command to (re-)apply.
