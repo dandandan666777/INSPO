@@ -76,11 +76,18 @@ export async function getItemById(id: number): Promise<SearchResult | null> {
   };
 }
 
+// CLIP was trained on image-caption pairs, so caption-shaped prompts recall
+// better than bare noun phrases. "matte black finish" alone drifts toward
+// abstract patterns; the wrapper anchors it to product photography.
+function clipPrompt(query: string): string {
+  return `a product design photograph of ${query}`;
+}
+
 export async function searchItems(query: string, limit = DEFAULT_LIMIT): Promise<SearchResult[]> {
   const trimmed = query.trim();
   if (!trimmed) return browseItems(limit);
 
-  const embedding = await embedText(trimmed);
+  const embedding = await embedText(clipPrompt(trimmed));
   const vectorLiteral = `[${embedding.join(',')}]`;
 
   const supabase = supabaseAdmin();
