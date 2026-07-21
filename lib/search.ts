@@ -117,6 +117,41 @@ function clipPrompt(query: string): string {
   return `a product design photograph of ${query}`;
 }
 
+// Postgres full-text search treats "iphone" and "phone" as separate tokens.
+// Expanding the TEXT side to sibling terms lets "phone" pick up iPhone-titled
+// articles (whose vector score alone would sit below MIN_SCORE). Vector side
+// stays on the raw query — CLIP handles visual synonymy on its own.
+const TEXT_ALIASES: Record<string, readonly string[]> = {
+  phone: ['iphone', 'smartphone'],
+  iphone: ['phone', 'smartphone'],
+  smartphone: ['phone', 'iphone'],
+  tv: ['television'],
+  television: ['tv'],
+  laptop: ['macbook', 'notebook'],
+  headphones: ['earbuds', 'earphones', 'headphone'],
+  earbuds: ['headphones', 'earphones', 'earbud'],
+  earphones: ['headphones', 'earbuds'],
+  speaker: ['speakers', 'soundbar'],
+  speakers: ['speaker', 'soundbar'],
+  watch: ['smartwatch', 'timepiece'],
+  smartwatch: ['watch', 'timepiece'],
+  bag: ['backpack', 'tote'],
+  car: ['vehicle', 'automobile'],
+  couch: ['sofa'],
+  sofa: ['couch'],
+  fridge: ['refrigerator'],
+};
+
+function expandTextQuery(query: string): string {
+  const words = query.trim().toLowerCase().split(/\s+/);
+  return words
+    .map((word) => {
+      const aliases = TEXT_ALIASES[word];
+      return aliases ? `(${[word, ...aliases].join(' OR ')})` : word;
+    })
+    .join(' ');
+}
+
 // Concrete-noun queries ("chair", "watch", "camera") should favor the
 // text-match signal so items whose title literally contains the word rise
 // above things that are merely visually similar. Abstract queries
@@ -151,7 +186,7 @@ export async function searchItems(query: string, limit = DEFAULT_LIMIT): Promise
   const supabase = supabaseAdmin();
   const { data, error } = await supabase.rpc('search_items', {
     query_embedding: vectorLiteral,
-    query_text: trimmed,
+    query_text: expandTextQuery(trimmed),
     match_count: limit,
     ...weights,
   });
