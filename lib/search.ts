@@ -3,6 +3,12 @@ import { supabaseAdmin } from './supabase';
 
 const DEFAULT_LIMIT = 30;
 
+// After the concrete-noun boost + title-weighted text-match landed, real
+// matches score ≥0.35 and incidental description mentions cluster around
+// 0.20-0.28. 0.30 is the cleanest cut: keeps the Sonos/Hi-Fi speaker wins
+// and drops the "sports car with 'vase' in the description" false positives.
+const MIN_SCORE = 0.3;
+
 export type SearchResult = {
   id: number;
   source_id: number;
@@ -111,19 +117,45 @@ function clipPrompt(query: string): string {
   return `a product design photograph of ${query}`;
 }
 
+// Concrete-noun queries ("chair", "watch", "camera") should favor the
+// text-match signal so items whose title literally contains the word rise
+// above things that are merely visually similar. Abstract queries
+// ("matte black finish", "warm oak grain") should stay vector-heavy.
+const MODIFIER_WORDS = new Set([
+  'matte', 'glossy', 'brushed', 'polished', 'warm', 'cool', 'dark', 'light',
+  'black', 'white', 'red', 'blue', 'green', 'orange', 'yellow', 'terracotta',
+  'aluminum', 'aluminium', 'wooden', 'wood', 'oak', 'walnut', 'ceramic', 'leather',
+  'circular', 'square', 'round', 'rounded', 'flat', 'curved',
+  'soft', 'hard', 'smooth', 'rough', 'sleek', 'minimal', 'minimalist',
+  'modern', 'vintage', 'retro',
+]);
+
+type Weights = { vector_weight: number; text_weight: number; both_bonus: number };
+
+function weightsFor(query: string): Weights {
+  const words = query.trim().toLowerCase().split(/\s+/);
+  const isConcrete = words.length <= 2 && !words.some((w) => MODIFIER_WORDS.has(w));
+  return isConcrete
+    ? { vector_weight: 0.5, text_weight: 0.5, both_bonus: 0.25 }
+    : { vector_weight: 0.7, text_weight: 0.3, both_bonus: 0.15 };
+}
+
 export async function searchItems(query: string, limit = DEFAULT_LIMIT): Promise<SearchResult[]> {
   const trimmed = query.trim();
   if (!trimmed) return browseItems(limit);
 
   const embedding = await embedText(clipPrompt(trimmed));
   const vectorLiteral = `[${embedding.join(',')}]`;
+  const weights = weightsFor(trimmed);
 
   const supabase = supabaseAdmin();
   const { data, error } = await supabase.rpc('search_items', {
     query_embedding: vectorLiteral,
     query_text: trimmed,
     match_count: limit,
+    ...weights,
   });
   if (error) throw new Error(`Search RPC failed: ${error.message}`);
-  return (data ?? []) as SearchResult[];
+  const results = (data ?? []) as SearchResult[];
+  return results.filter((row) => (row.score ?? 0) >= MIN_SCORE);
 }

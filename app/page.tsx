@@ -1,3 +1,4 @@
+import { EmptySearch } from '@/components/empty-search';
 import { ExampleQueries } from '@/components/example-queries';
 import { MasonryGrid } from '@/components/masonry-grid';
 import { SiteHeader } from '@/components/site-header';
@@ -24,9 +25,7 @@ export default async function Home({ searchParams }: PageProps) {
           <ExampleQueries />
         )}
         {items.length === 0 ? (
-          <div className="py-20 text-center text-muted-foreground">
-            No product design inspiration found. Try a different query.
-          </div>
+          <EmptySearch query={query} />
         ) : (
           <MasonryGrid items={items} />
         )}
