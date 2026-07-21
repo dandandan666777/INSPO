@@ -40,6 +40,9 @@ yarn-error.log*
 # claude code local settings
 .claude/
 
+# large design-reference screencaptures (kept locally, not tracked)
+design/screencapture-*.png
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

@@ -1,15 +1,36 @@
-import { Sparkles } from 'lucide-react';
+import { ExampleQueries } from '@/components/example-queries';
+import { MasonryGrid } from '@/components/masonry-grid';
+import { SiteHeader } from '@/components/site-header';
+import { browseItems, searchItems } from '@/lib/search';
 
-export default function Home() {
+type PageProps = {
+  searchParams: Promise<{ q?: string }>;
+};
+
+export default async function Home({ searchParams }: PageProps) {
+  const { q } = await searchParams;
+  const query = q?.trim() ?? '';
+  const items = query ? await searchItems(query) : await browseItems();
+
   return (
-    <main className="flex flex-1 items-center justify-center px-6">
-      <div className="flex flex-col items-center gap-4 text-center">
-        <Sparkles className="h-8 w-8" aria-hidden />
-        <h1 className="text-2xl font-semibold tracking-tight">Design Inspiration</h1>
-        <p className="max-w-md text-sm text-neutral-500">
-          Semantic search across the product-design web. Coming soon.
-        </p>
-      </div>
-    </main>
+    <>
+      <SiteHeader />
+      <main className="mx-auto max-w-7xl px-6 py-8">
+        {query ? (
+          <p className="mb-6 text-sm text-muted-foreground">
+            {items.length} result{items.length === 1 ? '' : 's'} for &ldquo;{query}&rdquo;
+          </p>
+        ) : (
+          <ExampleQueries />
+        )}
+        {items.length === 0 ? (
+          <div className="py-20 text-center text-muted-foreground">
+            No product design inspiration found. Try a different query.
+          </div>
+        ) : (
+          <MasonryGrid items={items} />
+        )}
+      </main>
+    </>
   );
 }
