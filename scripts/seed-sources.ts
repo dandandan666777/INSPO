@@ -57,6 +57,21 @@ const sources: SourceSeed[] = [
     feed_url: 'https://gearpatrol.com/feed/',
     homepage_url: 'https://gearpatrol.com',
   },
+  {
+    name: 'Wired Gear',
+    feed_url: 'https://www.wired.com/feed/category/gear/latest/rss',
+    homepage_url: 'https://www.wired.com/tag/gear',
+  },
+  {
+    name: 'Wired Design',
+    feed_url: 'https://www.wired.com/feed/category/design/latest/rss',
+    homepage_url: 'https://www.wired.com/tag/design',
+  },
+  {
+    name: 'The Verge Reviews',
+    feed_url: 'https://www.theverge.com/rss/reviews/index.xml',
+    homepage_url: 'https://www.theverge.com/reviews',
+  },
 ];
 
 async function main() {

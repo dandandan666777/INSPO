@@ -51,6 +51,34 @@ export async function browseItems(limit = DEFAULT_LIMIT): Promise<SearchResult[]
   }));
 }
 
+export type SourceRow = {
+  id: number;
+  name: string;
+  homepage_url: string;
+  feed_url: string;
+};
+
+export async function listActiveSources(): Promise<SourceRow[]> {
+  const supabase = supabaseAdmin();
+  const { data, error } = await supabase
+    .from('sources')
+    .select('id, name, homepage_url, feed_url')
+    .eq('active', true)
+    .order('name');
+  if (error) throw new Error(`Failed to load sources: ${error.message}`);
+  return (data ?? []) as SourceRow[];
+}
+
+export async function countEmbeddedItems(): Promise<number> {
+  const supabase = supabaseAdmin();
+  const { count, error } = await supabase
+    .from('items')
+    .select('*', { count: 'exact', head: true })
+    .not('embedding', 'is', null);
+  if (error) throw new Error(`Failed to count items: ${error.message}`);
+  return count ?? 0;
+}
+
 export async function getItemById(id: number): Promise<SearchResult | null> {
   const supabase = supabaseAdmin();
   const { data, error } = await supabase

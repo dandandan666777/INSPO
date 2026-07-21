@@ -1,0 +1,52 @@
+name: Daily ingestion
+
+on:
+  schedule:
+    # 03:00 UTC daily. Off-peak on Vercel/Supabase and quiet enough that
+    # if a source is flaky we've got plenty of buffer before user traffic.
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: ingest
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      R2_BUCKET: ${{ secrets.R2_BUCKET }}
+      R2_PUBLIC_URL: ${{ secrets.R2_PUBLIC_URL }}
+      REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Seed sources (idempotent)
+        run: pnpm exec tsx scripts/seed-sources.ts
+
+      - name: Ingest RSS feeds
+        run: pnpm exec tsx scripts/ingest-feed.ts
+
+      - name: Download new images
+        run: pnpm exec tsx scripts/download-images.ts
+
+      - name: Embed new items
+        run: pnpm exec tsx scripts/embed-items.ts
