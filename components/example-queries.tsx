@@ -20,7 +20,7 @@ export function ExampleQueries() {
           key={example}
           type="button"
           onClick={() => router.push(`/?q=${encodeURIComponent(example)}`)}
-          className="rounded-full border border-border bg-card px-3 py-1 text-sm text-foreground transition-colors hover:border-accent hover:text-accent"
+          className="rounded-full border-none bg-border/60 px-3.5 py-1.5 text-sm text-foreground transition-colors hover:bg-border"
         >
           {example}
         </button>

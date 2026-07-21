@@ -9,7 +9,7 @@ type SourceSeed = {
 const sources: SourceSeed[] = [
   {
     name: 'Dezeen',
-    feed_url: 'https://www.dezeen.com/feed/',
+    feed_url: 'https://www.dezeen.com/design/feed/',
     homepage_url: 'https://www.dezeen.com',
   },
   {
@@ -24,13 +24,38 @@ const sources: SourceSeed[] = [
   },
   {
     name: 'Design Milk',
-    feed_url: 'https://design-milk.com/feed/',
+    feed_url: 'https://design-milk.com/category/home-furnishings/feed/',
     homepage_url: 'https://design-milk.com',
   },
   {
     name: 'Designboom',
-    feed_url: 'https://www.designboom.com/feed/',
+    feed_url: 'https://www.designboom.com/design/feed/',
     homepage_url: 'https://www.designboom.com',
+  },
+  {
+    name: 'Cool Hunting',
+    feed_url: 'https://coolhunting.com/feed/',
+    homepage_url: 'https://coolhunting.com',
+  },
+  {
+    name: 'Gessato',
+    feed_url: 'https://www.gessato.com/feed/',
+    homepage_url: 'https://www.gessato.com',
+  },
+  {
+    name: 'Fast Company Design',
+    feed_url: 'https://www.fastcompany.com/section/co-design/rss',
+    homepage_url: 'https://www.fastcompany.com/co-design',
+  },
+  {
+    name: 'Hypebeast Design',
+    feed_url: 'https://hypebeast.com/design/feed',
+    homepage_url: 'https://hypebeast.com/design',
+  },
+  {
+    name: 'Gear Patrol',
+    feed_url: 'https://gearpatrol.com/feed/',
+    homepage_url: 'https://gearpatrol.com',
   },
 ];
 

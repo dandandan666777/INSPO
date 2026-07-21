@@ -4,7 +4,7 @@ import { SearchInput } from './search-input';
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-10 border-b border-border bg-background/85 backdrop-blur">
+    <header className="sticky top-0 z-10 bg-background/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center gap-4 px-6 py-3">
         <Link
           href="/"

@@ -51,6 +51,31 @@ export async function browseItems(limit = DEFAULT_LIMIT): Promise<SearchResult[]
   }));
 }
 
+export async function getItemById(id: number): Promise<SearchResult | null> {
+  const supabase = supabaseAdmin();
+  const { data, error } = await supabase
+    .from('items')
+    .select('id, source_id, title, description, source_url, image_r2_key, published_at, sources(name, homepage_url)')
+    .eq('id', id)
+    .not('image_r2_key', 'is', null)
+    .maybeSingle();
+  if (error) throw new Error(`Failed to load item ${id}: ${error.message}`);
+  if (!data) return null;
+
+  const row = data as unknown as BrowseRow;
+  return {
+    id: row.id,
+    source_id: row.source_id,
+    source_name: row.sources?.name ?? '',
+    source_homepage_url: row.sources?.homepage_url ?? '',
+    title: row.title,
+    description: row.description,
+    source_url: row.source_url,
+    image_r2_key: row.image_r2_key,
+    published_at: row.published_at,
+  };
+}
+
 export async function searchItems(query: string, limit = DEFAULT_LIMIT): Promise<SearchResult[]> {
   const trimmed = query.trim();
   if (!trimmed) return browseItems(limit);

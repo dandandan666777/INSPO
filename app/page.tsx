@@ -15,7 +15,7 @@ export default async function Home({ searchParams }: PageProps) {
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto max-w-7xl px-6 py-8">
+      <main className="px-3 py-6 sm:px-4">
         {query ? (
           <p className="mb-6 text-sm text-muted-foreground">
             {items.length} result{items.length === 1 ? '' : 's'} for &ldquo;{query}&rdquo;

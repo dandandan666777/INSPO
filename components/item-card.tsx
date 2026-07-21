@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import type { SearchResult } from '@/lib/search';
 
 export function ItemCard({ item }: { item: SearchResult }) {
@@ -6,13 +7,11 @@ export function ItemCard({ item }: { item: SearchResult }) {
   const imageUrl = `${publicUrl}/${item.image_r2_key}`;
 
   return (
-    <a
-      href={item.source_url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group mb-4 block break-inside-avoid"
+    <Link
+      href={`/items/${item.id}`}
+      className="group mb-2 block break-inside-avoid"
     >
-      <div className="overflow-hidden rounded-3xl bg-card">
+      <div className="overflow-hidden rounded-2xl bg-card transition-all duration-300 group-hover:shadow-lg group-hover:shadow-accent/10">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={imageUrl}
@@ -21,7 +20,9 @@ export function ItemCard({ item }: { item: SearchResult }) {
           className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.03]"
         />
       </div>
-      <div className="mt-2 px-1 text-xs text-muted-foreground">{item.source_name}</div>
-    </a>
+      <div className="mt-2 px-1 text-xs font-medium tracking-wide text-muted-foreground">
+        {item.source_name}
+      </div>
+    </Link>
   );
 }
