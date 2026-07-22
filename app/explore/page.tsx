@@ -3,6 +3,7 @@ import { ExampleQueries } from '@/components/example-queries';
 import { MasonryGrid } from '@/components/masonry-grid';
 import { SiteHeader } from '@/components/site-header';
 import { browseItems, searchItems } from '@/lib/search';
+import { getCurrentUserEmail, getSavedItemIds } from '@/lib/user-saves';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,7 +14,13 @@ type PageProps = {
 export default async function Explore({ searchParams }: PageProps) {
   const { q } = await searchParams;
   const query = q?.trim() ?? '';
-  const items = query ? await searchItems(query) : await browseItems();
+  const [items, email, savedIdList] = await Promise.all([
+    query ? searchItems(query) : browseItems(),
+    getCurrentUserEmail(),
+    getSavedItemIds(),
+  ]);
+  const savedIds = new Set(savedIdList);
+  const signedIn = Boolean(email);
 
   return (
     <>
@@ -29,7 +36,7 @@ export default async function Explore({ searchParams }: PageProps) {
         {items.length === 0 ? (
           <EmptySearch query={query} />
         ) : (
-          <MasonryGrid items={items} />
+          <MasonryGrid items={items} savedIds={savedIds} signedIn={signedIn} />
         )}
       </main>
     </>

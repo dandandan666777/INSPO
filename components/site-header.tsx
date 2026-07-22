@@ -1,9 +1,12 @@
 import { Bookmark, Sparkles } from 'lucide-react';
 import Link from 'next/link';
+import { getCurrentUserEmail } from '@/lib/user-saves';
 import { RefreshLink } from './refresh-link';
 import { SearchInput } from './search-input';
+import { SignInButton } from './signin-button';
 
-export function SiteHeader() {
+export async function SiteHeader() {
+  const email = await getCurrentUserEmail();
   return (
     <header className="sticky top-0 z-10 bg-background/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center gap-4 px-6 py-3">
@@ -25,6 +28,7 @@ export function SiteHeader() {
           <Bookmark className="h-4 w-4" aria-hidden />
           Saved
         </Link>
+        <SignInButton email={email} />
       </div>
     </header>
   );

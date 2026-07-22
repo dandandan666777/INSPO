@@ -1,59 +1,77 @@
 'use client';
 
 import { Bookmark } from 'lucide-react';
-import { useEffect, useState, type MouseEvent } from 'react';
+import { useRouter } from 'next/navigation';
+import { useState, useTransition, type MouseEvent } from 'react';
+import { SignInModal } from './signin-modal';
+import { saveItemAction, unsaveItemAction } from '@/lib/user-saves';
 
-const COOKIE_NAME = 'inspo-saved';
-const ONE_YEAR = 60 * 60 * 24 * 365;
+export function SaveButton({
+  itemId,
+  initialSaved,
+  signedIn,
+}: {
+  itemId: number;
+  initialSaved: boolean;
+  signedIn: boolean;
+}) {
+  const router = useRouter();
+  const [saved, setSaved] = useState(initialSaved);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [pending, startTransition] = useTransition();
 
-function readSavedIds(): number[] {
-  if (typeof document === 'undefined') return [];
-  const match = document.cookie.split('; ').find((row) => row.startsWith(`${COOKIE_NAME}=`));
-  if (!match) return [];
-  const value = decodeURIComponent(match.split('=')[1] ?? '');
-  if (!value) return [];
-  return value
-    .split(',')
-    .map((chunk) => Number.parseInt(chunk, 10))
-    .filter((n) => Number.isFinite(n));
-}
+  function performToggle(nextSaved: boolean) {
+    setSaved(nextSaved);
+    startTransition(async () => {
+      const result = nextSaved
+        ? await saveItemAction(itemId)
+        : await unsaveItemAction(itemId);
+      if (!result.ok) {
+        setSaved(!nextSaved);
+      }
+    });
+  }
 
-function writeSavedIds(ids: number[]) {
-  const value = encodeURIComponent(ids.join(','));
-  document.cookie = `${COOKIE_NAME}=${value}; path=/; max-age=${ONE_YEAR}; samesite=lax`;
-}
-
-export function SaveButton({ itemId }: { itemId: number }) {
-  const [saved, setSaved] = useState(false);
-
-  useEffect(() => {
-    setSaved(readSavedIds().includes(itemId));
-  }, [itemId]);
-
-  function toggle(event: MouseEvent<HTMLButtonElement>) {
+  function handleClick(event: MouseEvent<HTMLButtonElement>) {
     event.preventDefault();
     event.stopPropagation();
-    const current = readSavedIds();
-    const next = current.includes(itemId)
-      ? current.filter((id) => id !== itemId)
-      : [...current, itemId];
-    writeSavedIds(next);
-    setSaved(next.includes(itemId));
+    if (!signedIn) {
+      setModalOpen(true);
+      return;
+    }
+    performToggle(!saved);
+  }
+
+  function handleSignedIn() {
+    setModalOpen(false);
+    setSaved(true);
+    startTransition(async () => {
+      await saveItemAction(itemId);
+      router.refresh();
+    });
   }
 
   return (
-    <button
-      type="button"
-      onClick={toggle}
-      aria-label={saved ? 'Remove from saved' : 'Save image'}
-      className="absolute right-2 top-2 z-10 rounded-full bg-background/85 p-2 text-foreground opacity-0 shadow-sm backdrop-blur transition-all hover:bg-background group-hover:opacity-100 focus-visible:opacity-100 data-[saved=true]:opacity-100"
-      data-saved={saved}
-    >
-      <Bookmark
-        className="h-4 w-4"
-        fill={saved ? 'currentColor' : 'none'}
-        color={saved ? 'var(--accent)' : 'currentColor'}
+    <>
+      <button
+        type="button"
+        onClick={handleClick}
+        disabled={pending}
+        aria-label={saved ? 'Remove from saved' : 'Save image'}
+        className="absolute right-2 top-2 z-10 rounded-full bg-background/85 p-2 text-foreground opacity-0 shadow-sm backdrop-blur transition-all hover:bg-background group-hover:opacity-100 focus-visible:opacity-100 data-[saved=true]:opacity-100 disabled:cursor-wait"
+        data-saved={saved}
+      >
+        <Bookmark
+          className="h-4 w-4"
+          fill={saved ? 'currentColor' : 'none'}
+          color={saved ? 'var(--accent)' : 'currentColor'}
+        />
+      </button>
+      <SignInModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSuccess={handleSignedIn}
       />
-    </button>
+    </>
   );
 }
