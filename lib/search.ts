@@ -3,11 +3,9 @@ import { supabaseAdmin } from './supabase';
 
 const DEFAULT_LIMIT = 30;
 
-// After the concrete-noun boost + title-weighted text-match landed, real
-// matches score ≥0.35 and incidental description mentions cluster around
-// 0.20-0.28. 0.30 is the cleanest cut: keeps the Sonos/Hi-Fi speaker wins
-// and drops the "sports car with 'vase' in the description" false positives.
-const MIN_SCORE = 0.3;
+// MIN_SCORE is now query-type-aware — see weightsFor() and the QUERY_TYPES
+// table below. Concrete queries stay strict; abstract ones relax so
+// vector-only browsing surfaces like "warm colours" can return results.
 
 export type SearchResult = {
   id: number;
@@ -152,27 +150,82 @@ function expandTextQuery(query: string): string {
     .join(' ');
 }
 
-// Concrete-noun queries ("chair", "watch", "camera") should favor the
-// text-match signal so items whose title literally contains the word rise
-// above things that are merely visually similar. Abstract queries
-// ("matte black finish", "warm oak grain") should stay vector-heavy.
+// Classifying queries into three buckets lets the ranker do the right thing
+// for each: strict text-driven for specific products, balanced for mixed,
+// vector-driven with a lower threshold for broad style/property browsing.
+//
+// MODIFIER_WORDS: adjectives that describe how something looks/feels.
+// PROPERTY_NOUNS: nouns that name a visual property rather than a product.
+// A query whose non-modifier words are all in PROPERTY_NOUNS ("warm colours",
+// "rounded edges", "flowing shapes") gets treated as abstract.
 const MODIFIER_WORDS = new Set([
-  'matte', 'glossy', 'brushed', 'polished', 'warm', 'cool', 'dark', 'light',
-  'black', 'white', 'red', 'blue', 'green', 'orange', 'yellow', 'terracotta',
-  'aluminum', 'aluminium', 'wooden', 'wood', 'oak', 'walnut', 'ceramic', 'leather',
-  'circular', 'square', 'round', 'rounded', 'flat', 'curved',
-  'soft', 'hard', 'smooth', 'rough', 'sleek', 'minimal', 'minimalist',
-  'modern', 'vintage', 'retro',
+  'matte', 'glossy', 'brushed', 'polished', 'weathered', 'patinated', 'raw', 'worn', 'aged',
+  'warm', 'cool', 'cold', 'hot', 'dark', 'light', 'muted', 'vibrant', 'bold', 'subtle',
+  'black', 'white', 'grey', 'gray', 'red', 'blue', 'green', 'orange', 'yellow',
+  'pink', 'purple', 'brown', 'beige', 'ivory', 'terracotta', 'sage', 'olive',
+  'aluminum', 'aluminium', 'wooden', 'wood', 'oak', 'walnut', 'ash', 'birch',
+  'ceramic', 'leather', 'brass', 'copper', 'steel', 'concrete', 'marble', 'plastic',
+  'circular', 'square', 'round', 'rounded', 'flat', 'curved', 'angular', 'geometric', 'organic', 'flowing',
+  'soft', 'hard', 'smooth', 'rough', 'sleek', 'chunky', 'slim', 'thick', 'thin',
+  'minimal', 'minimalist', 'modern', 'vintage', 'retro', 'futuristic', 'industrial', 'brutalist',
+  'cozy', 'cosy', 'monochrome', 'monotone',
 ]);
 
-type Weights = { vector_weight: number; text_weight: number; both_bonus: number };
+const PROPERTY_NOUNS = new Set([
+  'colour', 'colours', 'color', 'colors', 'tone', 'tones', 'hue', 'hues', 'palette',
+  'shape', 'shapes', 'form', 'forms', 'geometry',
+  'edge', 'edges', 'corner', 'corners', 'line', 'lines', 'curve', 'curves',
+  'finish', 'surface', 'texture', 'material', 'grain', 'pattern', 'motif',
+  'style', 'vibe', 'mood', 'aesthetic', 'look', 'feel',
+]);
+
+type QueryType = 'concrete' | 'mixed' | 'abstract';
+type Weights = {
+  vector_weight: number;
+  text_weight: number;
+  both_bonus: number;
+  min_score: number;
+};
+
+// Thresholds calibrated to score distributions:
+// - Concrete queries lift real matches to >=0.5 via text-match, so a strict
+//   0.30 cut cleanly drops the CLIP-fishing tail.
+// - Mixed queries often see text_score=0 (both "wooden" AND "chair" in title
+//   is rare), so score = 0.7 * vector. Real matches land at 0.22-0.35.
+// - Abstract queries are vector-only against a text embedding; CLIP cosine
+//   caps around 0.15-0.20 for these. A stricter cut returns nothing.
+const WEIGHTS_BY_TYPE: Record<QueryType, Weights> = {
+  concrete: { vector_weight: 0.5, text_weight: 0.5, both_bonus: 0.25, min_score: 0.3 },
+  mixed:    { vector_weight: 0.7, text_weight: 0.3, both_bonus: 0.15, min_score: 0.2 },
+  abstract: { vector_weight: 0.9, text_weight: 0.1, both_bonus: 0.05, min_score: 0.15 },
+};
+
+function classifyQuery(query: string): QueryType {
+  const words = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return 'concrete';
+  const productNounCount = words.filter(
+    (w) => !MODIFIER_WORDS.has(w) && !PROPERTY_NOUNS.has(w),
+  ).length;
+  if (productNounCount === 0) return 'abstract';
+  if (words.length <= 2 && productNounCount === words.length) return 'concrete';
+  return 'mixed';
+}
+
+// For mixed queries ("wooden chair", "black watch"), text-search only the
+// product nouns — otherwise websearch_to_tsquery ANDs the terms and requires
+// both "wooden" and "chair" to appear in the title, which is rare. Vector
+// side still sees the full query so it can rerank by the modifier's vibe.
+function productNounsOnly(query: string): string {
+  return query
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter((w) => !MODIFIER_WORDS.has(w) && !PROPERTY_NOUNS.has(w))
+    .join(' ');
+}
 
 function weightsFor(query: string): Weights {
-  const words = query.trim().toLowerCase().split(/\s+/);
-  const isConcrete = words.length <= 2 && !words.some((w) => MODIFIER_WORDS.has(w));
-  return isConcrete
-    ? { vector_weight: 0.5, text_weight: 0.5, both_bonus: 0.25 }
-    : { vector_weight: 0.7, text_weight: 0.3, both_bonus: 0.15 };
+  return WEIGHTS_BY_TYPE[classifyQuery(query)];
 }
 
 export async function searchItems(query: string, limit = DEFAULT_LIMIT): Promise<SearchResult[]> {
@@ -181,16 +234,18 @@ export async function searchItems(query: string, limit = DEFAULT_LIMIT): Promise
 
   const embedding = await embedText(clipPrompt(trimmed));
   const vectorLiteral = `[${embedding.join(',')}]`;
-  const weights = weightsFor(trimmed);
+  const queryType = classifyQuery(trimmed);
+  const { min_score, ...weights } = WEIGHTS_BY_TYPE[queryType];
+  const textQuery = queryType === 'mixed' ? productNounsOnly(trimmed) : trimmed;
 
   const supabase = supabaseAdmin();
   const { data, error } = await supabase.rpc('search_items', {
     query_embedding: vectorLiteral,
-    query_text: expandTextQuery(trimmed),
+    query_text: expandTextQuery(textQuery),
     match_count: limit,
     ...weights,
   });
   if (error) throw new Error(`Search RPC failed: ${error.message}`);
   const results = (data ?? []) as SearchResult[];
-  return results.filter((row) => (row.score ?? 0) >= MIN_SCORE);
+  return results.filter((row) => (row.score ?? 0) >= min_score);
 }
