@@ -50,3 +50,6 @@ jobs:
 
       - name: Embed new items
         run: pnpm exec tsx scripts/embed-items.ts
+
+      - name: Score quality
+        run: pnpm exec tsx scripts/score-quality.ts

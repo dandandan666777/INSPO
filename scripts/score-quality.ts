@@ -1,6 +1,11 @@
 import { embedText } from '../lib/embeddings';
 import { supabaseAdmin } from '../lib/supabase';
 
+// Kept intentionally narrow — one positive + one game negative — because the
+// broader 4-negative experiment (see migration 0010) tanked precision by
+// hiding real product shots with people or text in them. Outlier categories
+// beyond games are handled by surgical title-pattern deletes in migration
+// 0011 instead.
 const POSITIVE_PROMPT = 'a professional product design photograph on a clean background';
 const NEGATIVE_PROMPT = 'a video game screenshot with cartoon graphics and pixelated UI';
 
