@@ -33,26 +33,9 @@ type BrowseRow = {
 
 export async function browseItems(limit = DEFAULT_LIMIT): Promise<SearchResult[]> {
   const supabase = supabaseAdmin();
-  const { data, error } = await supabase
-    .from('items')
-    .select('id, source_id, title, description, source_url, image_r2_key, published_at, sources(name, homepage_url)')
-    .not('image_r2_key', 'is', null)
-    .order('published_at', { ascending: false, nullsFirst: false })
-    .limit(limit);
+  const { data, error } = await supabase.rpc('random_items', { match_count: limit });
   if (error) throw new Error(`Browse failed: ${error.message}`);
-
-  const rows = (data ?? []) as unknown as BrowseRow[];
-  return rows.map((row) => ({
-    id: row.id,
-    source_id: row.source_id,
-    source_name: row.sources?.name ?? '',
-    source_homepage_url: row.sources?.homepage_url ?? '',
-    title: row.title,
-    description: row.description,
-    source_url: row.source_url,
-    image_r2_key: row.image_r2_key,
-    published_at: row.published_at,
-  }));
+  return (data ?? []) as SearchResult[];
 }
 
 export type SourceRow = {
@@ -73,6 +56,47 @@ export async function listActiveSources(): Promise<SourceRow[]> {
   return (data ?? []) as SourceRow[];
 }
 
+type CollageItem = { id: number; title: string; image_r2_key: string };
+
+// Hand-picked showcase items for the landing collage: a mix of product
+// categories (chair, charger, knife, phone, sneaker, car) to make the
+// value prop visible in one glance. If any of these get deleted from
+// items (source removed / manually pruned), fall back to latest items so
+// the landing never renders with fewer than 6 tiles.
+const LANDING_ITEM_IDS = [309, 318, 509, 634, 737, 742] as const;
+
+export async function collageItems(count = 6): Promise<CollageItem[]> {
+  const supabase = supabaseAdmin();
+
+  const { data: picked, error: pickedError } = await supabase
+    .from('items')
+    .select('id, title, image_r2_key')
+    .in('id', LANDING_ITEM_IDS as unknown as number[])
+    .not('image_r2_key', 'is', null);
+  if (pickedError) throw new Error(`Collage picked query failed: ${pickedError.message}`);
+
+  const pickedRows = (picked ?? []) as CollageItem[];
+  const byId = new Map(pickedRows.map((row) => [row.id, row]));
+  const ordered = LANDING_ITEM_IDS.map((id) => byId.get(id)).filter((row): row is CollageItem =>
+    row !== undefined,
+  );
+  if (ordered.length >= count) return ordered.slice(0, count);
+
+  const remaining = count - ordered.length;
+  const excludeIds = ordered.map((row) => row.id);
+  const { data: fallback, error: fallbackError } = await supabase
+    .from('items')
+    .select('id, title, image_r2_key')
+    .not('image_r2_key', 'is', null)
+    .not('embedding', 'is', null)
+    .not('id', 'in', `(${excludeIds.length ? excludeIds.join(',') : '0'})`)
+    .order('published_at', { ascending: false, nullsFirst: false })
+    .limit(remaining);
+  if (fallbackError) throw new Error(`Collage fallback query failed: ${fallbackError.message}`);
+
+  return [...ordered, ...((fallback ?? []) as CollageItem[])];
+}
+
 export async function countEmbeddedItems(): Promise<number> {
   const supabase = supabaseAdmin();
   const { count, error } = await supabase
@@ -81,6 +105,38 @@ export async function countEmbeddedItems(): Promise<number> {
     .not('embedding', 'is', null);
   if (error) throw new Error(`Failed to count items: ${error.message}`);
   return count ?? 0;
+}
+
+export async function getItemsByIds(ids: number[]): Promise<SearchResult[]> {
+  if (ids.length === 0) return [];
+  const supabase = supabaseAdmin();
+  const { data, error } = await supabase
+    .from('items')
+    .select(
+      'id, source_id, title, description, source_url, image_r2_key, published_at, sources(name, homepage_url)',
+    )
+    .in('id', ids)
+    .not('image_r2_key', 'is', null);
+  if (error) throw new Error(`Failed to load items: ${error.message}`);
+
+  const rows = (data ?? []) as unknown as BrowseRow[];
+  const byId = new Map(
+    rows.map((row) => [
+      row.id,
+      {
+        id: row.id,
+        source_id: row.source_id,
+        source_name: row.sources?.name ?? '',
+        source_homepage_url: row.sources?.homepage_url ?? '',
+        title: row.title,
+        description: row.description,
+        source_url: row.source_url,
+        image_r2_key: row.image_r2_key,
+        published_at: row.published_at,
+      } satisfies SearchResult,
+    ]),
+  );
+  return ids.map((id) => byId.get(id)).filter((row): row is SearchResult => row !== undefined);
 }
 
 export async function getItemById(id: number): Promise<SearchResult | null> {

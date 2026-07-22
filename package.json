@@ -10,7 +10,8 @@
     "seed": "tsx --env-file=.env.local scripts/seed-sources.ts",
     "ingest": "tsx --env-file=.env.local scripts/ingest-feed.ts",
     "download-images": "tsx --env-file=.env.local scripts/download-images.ts",
-    "embed": "tsx --env-file=.env.local scripts/embed-items.ts"
+    "embed": "tsx --env-file=.env.local scripts/embed-items.ts",
+    "score-quality": "tsx --env-file=.env.local scripts/score-quality.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1090.0",

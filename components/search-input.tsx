@@ -22,7 +22,7 @@ export function SearchInput() {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const trimmed = value.trim();
-    router.push(trimmed ? `/?q=${encodeURIComponent(trimmed)}` : '/');
+    router.push(trimmed ? `/explore?q=${encodeURIComponent(trimmed)}` : '/explore');
   }
 
   return (

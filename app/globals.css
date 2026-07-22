@@ -6,9 +6,9 @@
   --card: #ffffff;
   --muted-foreground: #6b7280;
   --border: #e8e3db;
-  --accent: #c96a3d;
+  --accent: #ee6b33;
   --accent-foreground: #ffffff;
-  --accent-hover: #a8552b;
+  --accent-hover: #d15220;
   --success: #6b8f71;
 }
 
@@ -24,6 +24,7 @@
   --color-success: var(--success);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-playfair);
 }
 
 body {

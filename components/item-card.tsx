@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { SearchResult } from '@/lib/search';
+import { SaveButton } from './save-button';
 
 export function ItemCard({ item }: { item: SearchResult }) {
   const publicUrl = process.env.R2_PUBLIC_URL;
@@ -11,7 +12,7 @@ export function ItemCard({ item }: { item: SearchResult }) {
       href={`/items/${item.id}`}
       className="group mb-2 block break-inside-avoid"
     >
-      <div className="overflow-hidden rounded-2xl bg-card transition-all duration-300 group-hover:shadow-lg group-hover:shadow-accent/10">
+      <div className="relative overflow-hidden rounded-2xl bg-card transition-all duration-300 group-hover:shadow-lg group-hover:shadow-accent/10">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={imageUrl}
@@ -19,6 +20,7 @@ export function ItemCard({ item }: { item: SearchResult }) {
           loading="lazy"
           className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.03]"
         />
+        <SaveButton itemId={item.id} />
       </div>
       <div className="mt-2 px-1 text-xs font-medium tracking-wide text-muted-foreground">
         {item.source_name}

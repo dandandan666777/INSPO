@@ -17,7 +17,7 @@ export function EmptySearch({ query }: { query: string }) {
         </p>
       </div>
       <Link
-        href="/"
+        href="/explore"
         className="rounded-full bg-foreground px-5 py-2 text-sm font-medium text-background transition-colors hover:bg-foreground/85"
       >
         Browse latest

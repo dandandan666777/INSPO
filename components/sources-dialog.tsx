@@ -44,8 +44,8 @@ export function SourcesDialog({ sources }: { sources: SourceRow[] }) {
             </button>
           </header>
           <p className="mb-5 text-sm text-muted-foreground">
-            Design Inspiration aggregates from these editorial product-design publications. Click any
-            source to visit its homepage.
+            INSPO aggregates from these editorial product-design publications. Click any source to
+            visit its homepage.
           </p>
           <ul className="space-y-2">
             {sources.map((source) => (
