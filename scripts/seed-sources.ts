@@ -72,6 +72,21 @@ const sources: SourceSeed[] = [
     feed_url: 'https://www.theverge.com/rss/reviews/index.xml',
     homepage_url: 'https://www.theverge.com/reviews',
   },
+  {
+    name: 'Apple Newsroom',
+    feed_url: 'https://www.apple.com/newsroom/rss-feed.rss',
+    homepage_url: 'https://www.apple.com/newsroom',
+  },
+  {
+    name: 'Nothing',
+    feed_url: 'https://nothing.tech/blogs/news.atom',
+    homepage_url: 'https://nothing.tech',
+  },
+  {
+    name: 'The Awesomer',
+    feed_url: 'https://theawesomer.com/rss',
+    homepage_url: 'https://theawesomer.com',
+  },
 ];
 
 async function main() {
