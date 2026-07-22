@@ -1,7 +1,6 @@
 'use client';
 
 import { X } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState, useTransition } from 'react';
 import {
   resetPasswordAction,
@@ -20,7 +19,6 @@ export function SignInModal({
   onClose: () => void;
   onSuccess: () => void;
 }) {
-  const router = useRouter();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [mode, setMode] = useState<Mode>('signin');
   const [email, setEmail] = useState('');
@@ -32,18 +30,13 @@ export function SignInModal({
   useEffect(() => {
     const el = dialogRef.current;
     if (!el) return;
-    if (open && !el.open) el.showModal();
-    if (!open && el.open) el.close();
-  }, [open]);
-
-  useEffect(() => {
-    if (open) {
+    if (open && !el.open) {
+      el.showModal();
       setMode('signin');
-      setEmail('');
-      setPassword('');
       setError(null);
       setInfo(null);
     }
+    if (!open && el.open) el.close();
   }, [open]);
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
@@ -53,10 +46,8 @@ export function SignInModal({
     startTransition(async () => {
       if (mode === 'signin') {
         const result = await signInAction(email, password);
-        if (result.ok) {
-          onSuccess();
-          router.refresh();
-        } else setError(result.error);
+        if (result.ok) onSuccess();
+        else setError(result.error);
       } else if (mode === 'signup') {
         const result = await signUpAction(email, password);
         if (result.ok) {
@@ -97,9 +88,6 @@ export function SignInModal({
     <dialog
       ref={dialogRef}
       onClose={onClose}
-      onClick={(event) => {
-        if (event.target === dialogRef.current) onClose();
-      }}
       className="fixed left-1/2 top-1/2 m-0 w-[92vw] max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-3xl bg-background p-0 shadow-2xl backdrop:bg-foreground/40 backdrop:backdrop-blur-sm"
     >
       <div className="p-6">
@@ -119,7 +107,6 @@ export function SignInModal({
           <input
             type="email"
             required
-            autoFocus
             autoComplete="email"
             disabled={pending}
             value={email}

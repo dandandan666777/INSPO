@@ -46,7 +46,11 @@ export function SaveButton({
     setModalOpen(false);
     setSaved(true);
     startTransition(async () => {
-      await saveItemAction(itemId);
+      const result = await saveItemAction(itemId);
+      if (!result.ok) {
+        setSaved(false);
+        return;
+      }
       router.refresh();
     });
   }

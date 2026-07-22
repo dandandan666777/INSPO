@@ -27,7 +27,15 @@ export function SourcesDialog({ sources }: { sources: SourceRow[] }) {
       <dialog
         ref={dialogRef}
         onClick={(event) => {
-          if (event.target === dialogRef.current) close();
+          const el = dialogRef.current;
+          if (!el || event.target !== el) return;
+          const rect = el.getBoundingClientRect();
+          const inside =
+            event.clientX >= rect.left &&
+            event.clientX <= rect.right &&
+            event.clientY >= rect.top &&
+            event.clientY <= rect.bottom;
+          if (!inside) close();
         }}
         className="w-[92vw] max-w-md rounded-3xl bg-background p-0 shadow-2xl backdrop:bg-foreground/40 backdrop:backdrop-blur-sm"
       >
