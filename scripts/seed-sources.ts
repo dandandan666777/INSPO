@@ -82,6 +82,21 @@ const sources: SourceSeed[] = [
     feed_url: 'https://www.sightunseen.com/feed/',
     homepage_url: 'https://www.sightunseen.com',
   },
+  {
+    name: 'Wallpaper',
+    feed_url: 'https://www.wallpaper.com/rss.xml',
+    homepage_url: 'https://www.wallpaper.com',
+  },
+  {
+    name: 'The Design Files',
+    feed_url: 'https://thedesignfiles.net/feed/',
+    homepage_url: 'https://thedesignfiles.net',
+  },
+  {
+    name: 'Icon Magazine',
+    feed_url: 'https://www.iconeye.com/feed',
+    homepage_url: 'https://www.iconeye.com',
+  },
 ];
 
 async function main() {

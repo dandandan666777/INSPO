@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { DetailSaveButton } from '@/components/detail-save-button';
 import { SiteHeader } from '@/components/site-header';
 import { getItemById } from '@/lib/search';
+import { getCurrentUserEmail, getSavedItemIds } from '@/lib/user-saves';
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -23,13 +25,19 @@ export default async function ItemPage({ params }: PageProps) {
   const numericId = Number.parseInt(id, 10);
   if (Number.isNaN(numericId)) notFound();
 
-  const item = await getItemById(numericId);
+  const [item, email, savedIdList] = await Promise.all([
+    getItemById(numericId),
+    getCurrentUserEmail(),
+    getSavedItemIds(),
+  ]);
   if (!item) notFound();
 
   const publicUrl = process.env.R2_PUBLIC_URL;
   if (!publicUrl) throw new Error('R2_PUBLIC_URL is not set');
   const imageUrl = `${publicUrl}/${item.image_r2_key}`;
   const published = formatDate(item.published_at);
+  const signedIn = Boolean(email);
+  const isSaved = savedIdList.includes(item.id);
 
   return (
     <>
@@ -86,14 +94,21 @@ export default async function ItemPage({ params }: PageProps) {
               <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                 Get further inspired
               </p>
-              <a
-                href={item.source_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-accent px-5 py-2.5 font-mono text-sm uppercase tracking-[0.18em] text-accent-foreground transition-colors hover:bg-accent-hover"
-              >
-                Go to the source ↗
-              </a>
+              <div className="flex flex-wrap items-center gap-3">
+                <a
+                  href={item.source_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-accent px-5 py-2.5 font-mono text-sm uppercase tracking-[0.18em] text-accent-foreground transition-colors hover:bg-accent-hover"
+                >
+                  Go to the source ↗
+                </a>
+                <DetailSaveButton
+                  itemId={item.id}
+                  initialSaved={isSaved}
+                  signedIn={signedIn}
+                />
+              </div>
             </div>
           </div>
         </div>

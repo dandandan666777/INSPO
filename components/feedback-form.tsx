@@ -45,12 +45,24 @@ export function FeedbackForm({ signedIn }: { signedIn: boolean }) {
 
   if (success) {
     return (
-      <p
-        role="status"
-        className="mt-8 inline-block border border-success bg-success/10 px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.18em] text-success"
-      >
-        [ Thanks. We&rsquo;ve got it. ]
-      </p>
+      <div className="mt-8 flex flex-col items-center gap-4">
+        <p
+          role="status"
+          className="inline-block border border-success bg-success/10 px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.18em] text-success"
+        >
+          [ Thanks. We&rsquo;ve got it. ]
+        </p>
+        <button
+          type="button"
+          onClick={() => {
+            setSuccess(false);
+            setError(null);
+          }}
+          className="border border-foreground px-4 py-2 font-mono text-[11px] uppercase tracking-[0.18em] text-foreground transition-colors hover:bg-foreground hover:text-background"
+        >
+          [Send more feedback]
+        </button>
+      </div>
     );
   }
 
