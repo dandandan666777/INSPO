@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import { Geist, Geist_Mono, JetBrains_Mono, Playfair_Display } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SiteFooter } from "@/components/site-footer";
 import "./globals.css";
@@ -18,6 +18,12 @@ const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin"],
   weight: ["400", "500"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
 });
 
 const SITE_NAME = "INSPO";
@@ -66,7 +72,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${jetbrainsMono.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <div className="flex-1">{children}</div>

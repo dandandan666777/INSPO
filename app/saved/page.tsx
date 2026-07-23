@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { Bookmark } from 'lucide-react';
 import { MasonryGrid } from '@/components/masonry-grid';
 import { SiteHeader } from '@/components/site-header';
 import { getItemsByIds } from '@/lib/search';
@@ -18,52 +17,48 @@ export default async function SavedPage() {
     <>
       <SiteHeader />
       <main className="px-3 py-6 sm:px-4">
-        <div className="mb-6 flex items-baseline justify-between">
-          <h1 className="text-lg font-semibold text-foreground">
-            Saved images
-            {items.length > 0 && (
-              <span className="ml-2 text-sm font-normal text-muted-foreground">
-                ({items.length})
-              </span>
-            )}
-          </h1>
+        <div className="mb-6 flex items-center justify-between border-b border-border pb-3 font-mono text-[11px] uppercase tracking-[0.18em]">
+          <span className="text-foreground">Library</span>
+          <span className="text-muted-foreground">
+            {items.length} {items.length === 1 ? 'item' : 'items'}
+          </span>
         </div>
 
         {!signedIn ? (
-          <div className="mx-auto flex max-w-md flex-col items-center gap-4 py-24 text-center">
-            <div className="rounded-full bg-border/60 p-4 text-muted-foreground">
-              <Bookmark className="h-6 w-6" aria-hidden />
-            </div>
-            <div className="space-y-1.5">
-              <h2 className="text-lg font-semibold text-foreground">Sign in to see your saves</h2>
-              <p className="text-sm text-muted-foreground">
-                Saves are tied to your email so you can pick up on another device. Click any
-                bookmark on an image to sign in and start a collection.
-              </p>
-            </div>
+          <div className="mx-auto max-w-lg border border-border bg-card p-8 text-center">
+            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+              Status
+            </p>
+            <p className="mt-2 font-mono text-sm uppercase tracking-[0.18em] text-foreground">
+              [ Sign in to see your library ]
+            </p>
+            <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
+              Saves are tied to your email so you can pick up on another device. Click any bookmark
+              on an image to sign in and start a collection.
+            </p>
             <Link
               href="/explore"
-              className="rounded-full bg-foreground px-5 py-2 text-sm font-medium text-background transition-colors hover:bg-foreground/85"
+              className="mt-8 inline-flex items-center bg-accent px-5 py-2 font-mono text-[11px] uppercase tracking-[0.18em] text-accent-foreground transition-colors hover:bg-accent-hover"
             >
-              Browse images
+              Browse ↗
             </Link>
           </div>
         ) : items.length === 0 ? (
-          <div className="mx-auto flex max-w-md flex-col items-center gap-4 py-24 text-center">
-            <div className="rounded-full bg-border/60 p-4 text-muted-foreground">
-              <Bookmark className="h-6 w-6" aria-hidden />
-            </div>
-            <div className="space-y-1.5">
-              <h2 className="text-lg font-semibold text-foreground">Nothing saved yet</h2>
-              <p className="text-sm text-muted-foreground">
-                You&rsquo;re signed in as {email}. Click the bookmark on any image to add it here.
-              </p>
-            </div>
+          <div className="mx-auto max-w-lg border border-border bg-card p-8 text-center">
+            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+              Status · Signed in as {email}
+            </p>
+            <p className="mt-2 font-mono text-sm uppercase tracking-[0.18em] text-foreground">
+              [ Library empty ]
+            </p>
+            <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
+              Hover any image and hit [Save +] to add it to your library.
+            </p>
             <Link
               href="/explore"
-              className="rounded-full bg-foreground px-5 py-2 text-sm font-medium text-background transition-colors hover:bg-foreground/85"
+              className="mt-8 inline-flex items-center bg-accent px-5 py-2 font-mono text-[11px] uppercase tracking-[0.18em] text-accent-foreground transition-colors hover:bg-accent-hover"
             >
-              Browse images
+              Browse ↗
             </Link>
           </div>
         ) : (

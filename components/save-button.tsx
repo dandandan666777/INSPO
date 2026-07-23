@@ -1,8 +1,7 @@
 'use client';
 
-import { Bookmark } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { useState, useTransition, type MouseEvent } from 'react';
+import { useRouter } from 'next/navigation';
 import { SignInModal } from './signin-modal';
 import { saveItemAction, unsaveItemAction } from '@/lib/user-saves';
 
@@ -26,9 +25,7 @@ export function SaveButton({
       const result = nextSaved
         ? await saveItemAction(itemId)
         : await unsaveItemAction(itemId);
-      if (!result.ok) {
-        setSaved(!nextSaved);
-      }
+      if (!result.ok) setSaved(!nextSaved);
     });
   }
 
@@ -61,15 +58,11 @@ export function SaveButton({
         type="button"
         onClick={handleClick}
         disabled={pending}
-        aria-label={saved ? 'Remove from saved' : 'Save image'}
-        className="absolute right-2 top-2 z-10 rounded-full bg-background/85 p-2 text-foreground opacity-0 shadow-sm backdrop-blur transition-all hover:bg-background group-hover:opacity-100 focus-visible:opacity-100 data-[saved=true]:opacity-100 disabled:cursor-wait"
+        aria-label={saved ? 'Remove from library' : 'Save to library'}
+        className="absolute right-2 top-2 z-10 border border-border bg-background px-2 py-1 font-mono text-[10px] uppercase tracking-[0.15em] text-foreground opacity-0 shadow-sm transition-all hover:border-foreground group-hover:opacity-100 focus-visible:opacity-100 data-[saved=true]:opacity-100 data-[saved=true]:border-accent data-[saved=true]:bg-accent data-[saved=true]:text-accent-foreground disabled:cursor-wait"
         data-saved={saved}
       >
-        <Bookmark
-          className="h-4 w-4"
-          fill={saved ? 'currentColor' : 'none'}
-          color={saved ? 'var(--accent)' : 'currentColor'}
-        />
+        {saved ? '[Saved]' : '[Save +]'}
       </button>
       <SignInModal
         open={modalOpen}

@@ -1,6 +1,5 @@
 'use client';
 
-import { X } from 'lucide-react';
 import { useEffect, useRef, useState, useTransition } from 'react';
 import {
   resetPasswordAction,
@@ -51,135 +50,144 @@ export function SignInModal({
       } else if (mode === 'signup') {
         const result = await signUpAction(email, password);
         if (result.ok) {
-          setInfo(
-            'Check your inbox to confirm your email, then sign in. You can close this window.',
-          );
+          setInfo('Check your inbox to confirm your email, then sign in.');
         } else setError(result.error);
       } else {
         const result = await resetPasswordAction(email);
-        if (result.ok) {
-          setInfo('Reset link sent. Check your inbox.');
-        } else setError(result.error);
+        if (result.ok) setInfo('Reset link sent. Check your inbox.');
+        else setError(result.error);
       }
     });
   }
 
   const title =
-    mode === 'signin'
-      ? 'Sign in to save'
-      : mode === 'signup'
-        ? 'Create an account'
-        : 'Reset your password';
+    mode === 'signin' ? 'Auth · Sign in' : mode === 'signup' ? 'Auth · Sign up' : 'Auth · Reset';
 
   const cta =
-    pending && mode === 'signin'
-      ? 'Signing in…'
-      : pending && mode === 'signup'
-        ? 'Creating…'
-        : pending && mode === 'reset'
-          ? 'Sending…'
-          : mode === 'signin'
-            ? 'Sign in'
-            : mode === 'signup'
-              ? 'Create account'
-              : 'Send reset link';
+    pending
+      ? mode === 'signin'
+        ? 'Signing in…'
+        : mode === 'signup'
+          ? 'Creating…'
+          : 'Sending…'
+      : mode === 'signin'
+        ? 'Sign in ↗'
+        : mode === 'signup'
+          ? 'Create account ↗'
+          : 'Send reset link ↗';
 
   return (
     <dialog
       ref={dialogRef}
       onClose={onClose}
-      className="fixed left-1/2 top-1/2 m-0 w-[92vw] max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-3xl bg-background p-0 shadow-2xl backdrop:bg-foreground/40 backdrop:backdrop-blur-sm"
+      className="fixed left-1/2 top-1/2 m-0 w-[92vw] max-w-sm -translate-x-1/2 -translate-y-1/2 border border-border bg-background p-0 shadow-2xl backdrop:bg-foreground/50 backdrop:backdrop-blur-sm"
     >
       <div className="p-6">
-        <header className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-foreground">{title}</h2>
+        <header className="mb-4 flex items-center justify-between border-b border-border pb-4 font-mono text-[11px] uppercase tracking-[0.18em]">
+          <h2 className="text-foreground">{title}</h2>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-border hover:text-foreground"
+            className="px-2 py-1 text-muted-foreground transition-colors hover:text-foreground"
           >
-            <X className="h-4 w-4" />
+            [×]
           </button>
         </header>
 
         <form onSubmit={submit} className="space-y-3">
-          <input
-            type="email"
-            required
-            autoComplete="email"
-            disabled={pending}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            aria-label="Email address"
-            className="h-11 w-full rounded-full border-none bg-border/60 px-5 text-base text-foreground placeholder:text-muted-foreground focus:bg-border focus:outline-none disabled:opacity-60"
-          />
-          {mode !== 'reset' && (
+          <div>
+            <label className="mb-1 block font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+              Email
+            </label>
             <input
-              type="password"
+              type="email"
               required
-              minLength={8}
-              autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
+              autoComplete="email"
               disabled={pending}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password (min 8 characters)"
-              aria-label="Password"
-              className="h-11 w-full rounded-full border-none bg-border/60 px-5 text-base text-foreground placeholder:text-muted-foreground focus:bg-border focus:outline-none disabled:opacity-60"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              aria-label="Email address"
+              className="h-11 w-full border border-border bg-card px-3 font-mono text-sm text-foreground placeholder:text-muted-foreground focus:border-foreground focus:outline-none disabled:opacity-60"
             />
+          </div>
+          {mode !== 'reset' && (
+            <div>
+              <label className="mb-1 block font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                Password · min 8 characters
+              </label>
+              <input
+                type="password"
+                required
+                minLength={8}
+                autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
+                disabled={pending}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                aria-label="Password"
+                className="h-11 w-full border border-border bg-card px-3 font-mono text-sm text-foreground placeholder:text-muted-foreground focus:border-foreground focus:outline-none disabled:opacity-60"
+              />
+            </div>
           )}
           <button
             type="submit"
             disabled={pending}
-            className="inline-flex h-11 w-full items-center justify-center rounded-full bg-accent px-5 text-base font-medium text-accent-foreground transition-colors hover:bg-accent-hover disabled:opacity-60"
+            className="inline-flex h-11 w-full items-center justify-center bg-accent px-5 font-mono text-sm uppercase tracking-[0.18em] text-accent-foreground transition-colors hover:bg-accent-hover disabled:opacity-60"
           >
             {cta}
           </button>
 
           {info && (
-            <p role="status" className="rounded-2xl bg-success/15 px-4 py-2 text-sm text-success">
-              {info}
+            <p
+              role="status"
+              className="border border-success bg-success/10 px-3 py-2 font-mono text-[11px] uppercase tracking-[0.15em] text-success"
+            >
+              [ {info} ]
             </p>
           )}
           {error && (
-            <p role="alert" className="text-sm text-accent-hover">
-              {error}
+            <p
+              role="alert"
+              className="font-mono text-[11px] uppercase tracking-[0.15em] text-accent-hover"
+            >
+              [ Error ] {error}
             </p>
           )}
         </form>
 
-        <div className="mt-5 flex flex-col gap-2 text-center text-sm text-muted-foreground">
+        <div className="mt-5 flex flex-col gap-2 border-t border-border pt-4 text-center font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
           {mode === 'signin' && (
             <>
               <button
                 type="button"
                 onClick={() => setMode('reset')}
-                className="hover:text-accent"
+                className="transition-colors hover:text-foreground"
               >
-                Forgot password?
+                [Forgot password?]
               </button>
               <span>
-                No account yet?{' '}
+                No account?{' '}
                 <button
                   type="button"
                   onClick={() => setMode('signup')}
-                  className="font-medium text-foreground hover:text-accent"
+                  className="text-foreground transition-colors hover:text-accent"
                 >
-                  Sign up
+                  [Sign up]
                 </button>
               </span>
             </>
           )}
           {mode === 'signup' && (
             <span>
-              Already have an account?{' '}
+              Have an account?{' '}
               <button
                 type="button"
                 onClick={() => setMode('signin')}
-                className="font-medium text-foreground hover:text-accent"
+                className="text-foreground transition-colors hover:text-accent"
               >
-                Sign in
+                [Sign in]
               </button>
             </span>
           )}
@@ -187,9 +195,9 @@ export function SignInModal({
             <button
               type="button"
               onClick={() => setMode('signin')}
-              className="font-medium text-foreground hover:text-accent"
+              className="text-foreground transition-colors hover:text-accent"
             >
-              Back to sign in
+              [Back to sign in]
             </button>
           )}
         </div>

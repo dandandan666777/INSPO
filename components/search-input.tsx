@@ -1,6 +1,5 @@
 'use client';
 
-import { Search } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
@@ -26,20 +25,22 @@ export function SearchInput() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="relative">
-      <Search
-        className="pointer-events-none absolute left-5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+    <form onSubmit={handleSubmit} className="relative flex items-center gap-2">
+      <span
         aria-hidden
-      />
+        className="pointer-events-none font-mono text-sm text-accent"
+      >
+        {'>'}
+      </span>
       <input
         ref={inputRef}
         type="search"
         name="q"
         value={value}
         onChange={(event) => setValue(event.target.value)}
-        placeholder="Search product design inspiration…"
+        placeholder="search product design…"
         aria-label="Search product design inspiration"
-        className="h-12 w-full rounded-full border-none bg-border/70 pl-12 pr-5 text-base text-foreground placeholder:text-muted-foreground focus:bg-border focus:outline-none"
+        className="h-10 w-full border border-border bg-card px-3 font-mono text-sm text-foreground placeholder:text-muted-foreground focus:border-foreground focus:outline-none"
       />
     </form>
   );

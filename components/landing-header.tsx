@@ -1,29 +1,37 @@
 import Link from 'next/link';
-import { Sparkles } from 'lucide-react';
+import { countEmbeddedItems, listActiveSources } from '@/lib/search';
 import { getCurrentUserEmail } from '@/lib/user-saves';
 import { SignInButton } from './signin-button';
 
 export async function LandingHeader() {
-  const email = await getCurrentUserEmail();
+  const [email, count, sources] = await Promise.all([
+    getCurrentUserEmail(),
+    countEmbeddedItems(),
+    listActiveSources(),
+  ]);
   return (
-    <header className="sticky top-0 z-10 bg-background/95 backdrop-blur">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
-        <Link
-          href="/"
-          className="flex items-center gap-2 text-lg font-semibold tracking-tight"
-        >
-          <Sparkles className="h-5 w-5 text-accent" aria-hidden />
-          <span className="text-accent">INSPO</span>
-        </Link>
-        <div className="flex items-center gap-2">
+    <header className="sticky top-0 z-20 border-b border-border bg-background/95 backdrop-blur">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-3 font-mono text-[11px] uppercase tracking-[0.18em]">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <Link href="/" className="font-semibold text-accent">
+            INSPO
+          </Link>
+          <span className="text-muted-foreground">·</span>
+          <span className="text-muted-foreground">v1.0</span>
+          <span className="hidden text-muted-foreground sm:inline">·</span>
+          <span className="hidden text-muted-foreground sm:inline">
+            {count} images · {sources.length} sources
+          </span>
+        </div>
+        <nav className="flex items-center gap-2">
           <Link
             href="/explore"
-            className="rounded-full bg-border/60 px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-border"
+            className="border border-foreground px-3 py-1.5 transition-colors hover:bg-foreground hover:text-background"
           >
-            Explore
+            [Search]
           </Link>
           <SignInButton email={email} />
-        </div>
+        </nav>
       </div>
     </header>
   );

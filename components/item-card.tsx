@@ -18,13 +18,13 @@ export function ItemCard({
   return (
     <div className="group relative h-full">
       <Link href={`/items/${item.id}`} className="block h-full">
-        <div className="h-full overflow-hidden rounded-2xl bg-card transition-all duration-300 group-hover:shadow-lg group-hover:shadow-accent/10">
+        <div className="h-full overflow-hidden border border-border bg-card transition-colors group-hover:border-foreground">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={imageUrl}
             alt={item.title}
             loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
           />
         </div>
       </Link>
