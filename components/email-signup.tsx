@@ -13,13 +13,14 @@ export function EmailSignup() {
     <section className="border-t border-border bg-background">
       <div className="mx-auto max-w-2xl px-6 py-20 text-center sm:py-24">
         <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-          Newsletter · Weekly
+          Feedback · Requests
         </p>
         <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-          Stay up to date with the latest innovation
+          Got something you want to see? Or any feedback.
         </h2>
         <p className="mt-3 text-sm text-muted-foreground sm:text-base">
-          Handpicked product-design finds delivered occasionally. No spam.
+          Drop your email — we&rsquo;ll follow up. Source ideas, feature requests, gripes,
+          anything.
         </p>
 
         {success ? (
@@ -27,7 +28,7 @@ export function EmailSignup() {
             role="status"
             className="mt-8 inline-block border border-success bg-success/10 px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.18em] text-success"
           >
-            [ Subscribed. Check your inbox. ]
+            [ Thanks. We&rsquo;ll be in touch. ]
           </p>
         ) : (
           <form action={formAction} className="mt-8 flex flex-col gap-2 sm:flex-row">
@@ -45,7 +46,7 @@ export function EmailSignup() {
               disabled={pending}
               className="inline-flex h-11 items-center justify-center bg-accent px-6 font-mono text-sm uppercase tracking-[0.18em] text-accent-foreground transition-colors hover:bg-accent-hover disabled:opacity-60"
             >
-              {pending ? 'Adding…' : 'Subscribe ↗'}
+              {pending ? 'Sending…' : 'Send ↗'}
             </button>
           </form>
         )}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, JetBrains_Mono, Playfair_Display } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import { FeedbackSection } from "@/components/feedback-section";
 import { SiteFooter } from "@/components/site-footer";
 import "./globals.css";
 
@@ -76,6 +77,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <div className="flex-1">{children}</div>
+        <FeedbackSection />
         <SiteFooter />
         <Analytics />
       </body>
