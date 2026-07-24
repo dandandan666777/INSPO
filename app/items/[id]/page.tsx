@@ -45,7 +45,7 @@ export default async function ItemPage({ params }: PageProps) {
       <main className="mx-auto max-w-6xl px-6 py-8">
         <Link
           href="/explore"
-          className="mb-6 inline-flex items-center gap-1 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
+          className="mb-4 -ml-2 inline-flex min-h-11 items-center gap-1 px-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground lg:min-h-0 lg:ml-0 lg:mb-6 lg:px-0"
         >
           [← Back to search]
         </Link>
@@ -99,7 +99,7 @@ export default async function ItemPage({ params }: PageProps) {
                   href={item.source_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-accent px-5 py-2.5 font-mono text-sm uppercase tracking-[0.18em] text-accent-foreground transition-colors hover:bg-accent-hover"
+                  className="inline-flex min-h-11 items-center gap-2 bg-accent px-5 py-2.5 font-mono text-sm uppercase tracking-[0.18em] text-accent-foreground transition-colors hover:bg-accent-hover"
                 >
                   Go to the source ↗
                 </a>

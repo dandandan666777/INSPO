@@ -79,7 +79,7 @@ export function FeedbackForm({ signedIn }: { signedIn: boolean }) {
           placeholder="Source you'd love to see. Feature request. Bug. Gripe. Anything."
           aria-label="Feedback"
           rows={4}
-          className="w-full border border-border bg-card px-4 py-3 font-mono text-sm text-foreground placeholder:text-muted-foreground focus:border-foreground focus:outline-none disabled:opacity-60"
+          className="w-full border border-border bg-card px-4 py-3 font-mono text-base text-foreground placeholder:text-muted-foreground focus:border-foreground focus:outline-none disabled:opacity-60 sm:text-sm"
         />
         <div className="flex items-center justify-between gap-4">
           <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">

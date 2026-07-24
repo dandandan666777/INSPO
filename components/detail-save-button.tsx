@@ -57,7 +57,7 @@ export function DetailSaveButton({
         onClick={handleClick}
         disabled={pending}
         aria-label={saved ? 'Remove from library' : 'Save to library'}
-        className={`inline-flex items-center gap-2 border px-5 py-2.5 font-mono text-sm uppercase tracking-[0.18em] transition-colors disabled:cursor-wait disabled:opacity-60 ${
+        className={`inline-flex min-h-11 items-center gap-2 border px-5 py-2.5 font-mono text-sm uppercase tracking-[0.18em] transition-colors disabled:cursor-wait disabled:opacity-60 ${
           saved
             ? 'border-accent bg-accent text-accent-foreground hover:bg-accent-hover'
             : 'border-foreground text-foreground hover:bg-foreground hover:text-background'

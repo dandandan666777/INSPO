@@ -18,7 +18,7 @@ export function MasonryGrid({
   signedIn: boolean;
 }) {
   return (
-    <div className="grid grid-flow-dense grid-cols-2 gap-2 auto-rows-[minmax(0,10rem)] sm:auto-rows-[minmax(0,11rem)] md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 md:auto-rows-[minmax(0,12rem)]">
+    <div className="grid grid-flow-dense grid-cols-2 gap-2 auto-rows-[minmax(0,10rem)] sm:grid-cols-3 sm:auto-rows-[minmax(0,11rem)] md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 md:auto-rows-[minmax(0,12rem)]">
       {items.map((item, index) => (
         <div key={item.id} className={tileSpan(index)}>
           <ItemCard

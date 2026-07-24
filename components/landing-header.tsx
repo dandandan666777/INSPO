@@ -13,7 +13,7 @@ export async function LandingHeader() {
     <header className="sticky top-0 z-20 border-b border-border bg-background/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-3 font-mono text-[11px] uppercase tracking-[0.18em]">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-          <Link href="/" className="font-semibold text-accent">
+          <Link href="/" className="inline-flex min-h-11 items-center font-semibold text-accent lg:min-h-0">
             INSPO
           </Link>
           <span className="text-muted-foreground">·</span>
@@ -26,7 +26,7 @@ export async function LandingHeader() {
         <nav className="flex items-center gap-2">
           <Link
             href="/explore"
-            className="border border-foreground px-3 py-1.5 transition-colors hover:bg-foreground hover:text-background"
+            className="inline-flex min-h-11 items-center border border-foreground px-3 py-1.5 transition-colors hover:bg-foreground hover:text-background lg:min-h-0"
           >
             [Search]
           </Link>

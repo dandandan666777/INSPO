@@ -40,7 +40,7 @@ export function SearchInput() {
         onChange={(event) => setValue(event.target.value)}
         placeholder="search product design…"
         aria-label="Search product design inspiration"
-        className="h-10 w-full border border-border bg-card px-3 font-mono text-sm text-foreground placeholder:text-muted-foreground focus:border-foreground focus:outline-none"
+        className="h-11 w-full border border-border bg-card px-3 font-mono text-base text-foreground placeholder:text-muted-foreground focus:border-foreground focus:outline-none sm:h-10 sm:text-sm"
       />
     </form>
   );

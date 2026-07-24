@@ -59,7 +59,7 @@ export function SaveButton({
         onClick={handleClick}
         disabled={pending}
         aria-label={saved ? 'Remove from library' : 'Save to library'}
-        className="absolute right-2 top-2 z-10 border border-border bg-background px-2 py-1 font-mono text-[10px] uppercase tracking-[0.15em] text-foreground opacity-0 shadow-sm transition-all hover:border-foreground group-hover:opacity-100 focus-visible:opacity-100 data-[saved=true]:opacity-100 data-[saved=true]:border-accent data-[saved=true]:bg-accent data-[saved=true]:text-accent-foreground disabled:cursor-wait"
+        className="absolute right-2 top-2 z-10 border border-border bg-background px-3 py-2 font-mono text-[11px] uppercase tracking-[0.15em] text-foreground shadow-sm transition-all hover:border-foreground focus-visible:opacity-100 data-[saved=true]:opacity-100 data-[saved=true]:border-accent data-[saved=true]:bg-accent data-[saved=true]:text-accent-foreground disabled:cursor-wait lg:px-2 lg:py-1 lg:text-[10px] lg:opacity-0 lg:group-hover:opacity-100"
         data-saved={saved}
       >
         {saved ? '[Saved]' : '[Save +]'}

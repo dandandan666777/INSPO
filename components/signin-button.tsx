@@ -45,7 +45,7 @@ export function SignInButton({ email }: { email: string | null }) {
         <button
           type="button"
           onClick={() => setModalOpen(true)}
-          className="inline-flex items-center bg-accent px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-accent-foreground transition-colors hover:bg-accent-hover"
+          className="inline-flex min-h-11 items-center bg-accent px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-accent-foreground transition-colors hover:bg-accent-hover lg:min-h-0"
         >
           [Auth]
         </button>
@@ -70,7 +70,7 @@ export function SignInButton({ email }: { email: string | null }) {
         onClick={() => setMenuOpen((prev) => !prev)}
         aria-haspopup="menu"
         aria-expanded={menuOpen}
-        className="inline-flex items-center gap-1 border border-foreground px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-foreground transition-colors hover:bg-foreground hover:text-background"
+        className="inline-flex min-h-11 items-center gap-1 border border-foreground px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-foreground transition-colors hover:bg-foreground hover:text-background lg:min-h-0"
       >
         <span className="hidden sm:inline">{shortEmail}</span>
         <span className="sm:hidden">[Auth]</span>

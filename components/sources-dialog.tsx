@@ -19,7 +19,7 @@ export function SourcesDialog({ sources }: { sources: SourceRow[] }) {
       <button
         type="button"
         onClick={open}
-        className="border border-foreground px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-foreground transition-colors hover:bg-foreground hover:text-background"
+        className="inline-flex min-h-11 items-center border border-foreground px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-foreground transition-colors hover:bg-foreground hover:text-background lg:min-h-0"
       >
         [View sources]
       </button>

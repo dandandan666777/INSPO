@@ -109,7 +109,7 @@ export function SignInModal({
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               aria-label="Email address"
-              className="h-11 w-full border border-border bg-card px-3 font-mono text-sm text-foreground placeholder:text-muted-foreground focus:border-foreground focus:outline-none disabled:opacity-60"
+              className="h-11 w-full border border-border bg-card px-3 font-mono text-base text-foreground placeholder:text-muted-foreground focus:border-foreground focus:outline-none disabled:opacity-60 sm:text-sm"
             />
           </div>
           {mode !== 'reset' && (
@@ -127,7 +127,7 @@ export function SignInModal({
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 aria-label="Password"
-                className="h-11 w-full border border-border bg-card px-3 font-mono text-sm text-foreground placeholder:text-muted-foreground focus:border-foreground focus:outline-none disabled:opacity-60"
+                className="h-11 w-full border border-border bg-card px-3 font-mono text-base text-foreground placeholder:text-muted-foreground focus:border-foreground focus:outline-none disabled:opacity-60 sm:text-sm"
               />
             </div>
           )}
