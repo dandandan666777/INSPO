@@ -8,6 +8,11 @@ type CustomItem = {
 };
 
 const parser = new Parser<Record<string, never>, CustomItem>({
+  headers: {
+    'User-Agent':
+      'Mozilla/5.0 (compatible; InspoBot/1.0; +https://inspo-olive-five.vercel.app)',
+    Accept: 'application/rss+xml, application/xml;q=0.9, text/xml;q=0.8, */*;q=0.5',
+  },
   customFields: {
     item: [
       ['media:content', 'mediaContent'],
@@ -159,7 +164,7 @@ async function main() {
     `\nDone. ${total} items across ${sources.length} source${sources.length === 1 ? '' : 's'}` +
       (failed > 0 ? ` (${failed} source${failed === 1 ? '' : 's'} failed)` : ''),
   );
-  if (failed > 0) process.exit(1);
+  if (failed === sources.length) process.exit(1);
 }
 
 main().catch((err: unknown) => {
