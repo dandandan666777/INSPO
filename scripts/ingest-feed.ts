@@ -10,7 +10,7 @@ type CustomItem = {
 const parser = new Parser<Record<string, never>, CustomItem>({
   headers: {
     'User-Agent':
-      'Mozilla/5.0 (compatible; InspoBot/1.0; +https://inspo-olive-five.vercel.app)',
+      'Mozilla/5.0 (compatible; InspoBot/1.0; +https://productinspo.com)',
     Accept: 'application/rss+xml, application/xml;q=0.9, text/xml;q=0.8, */*;q=0.5',
   },
   customFields: {
