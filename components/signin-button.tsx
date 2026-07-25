@@ -61,8 +61,6 @@ export function SignInButton({ email }: { email: string | null }) {
     );
   }
 
-  const shortEmail = email && email.length > 18 ? `${email.slice(0, 16)}…` : email;
-
   return (
     <div ref={menuRef} className="relative">
       <button
@@ -70,10 +68,10 @@ export function SignInButton({ email }: { email: string | null }) {
         onClick={() => setMenuOpen((prev) => !prev)}
         aria-haspopup="menu"
         aria-expanded={menuOpen}
+        aria-label={`Account menu for ${email}`}
         className="inline-flex min-h-11 items-center gap-1 border border-foreground px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-foreground transition-colors hover:bg-foreground hover:text-background lg:min-h-0"
       >
-        <span className="hidden sm:inline">{shortEmail}</span>
-        <span className="sm:hidden">[Log in]</span>
+        <span>[Log in]</span>
         <span aria-hidden>{menuOpen ? '▲' : '▼'}</span>
       </button>
 
