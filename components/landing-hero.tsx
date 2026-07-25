@@ -16,15 +16,15 @@ export async function LandingHero() {
             Product Inspo · Search.001 · 2026
           </div>
           <h1 className="text-5xl font-bold leading-[0.95] tracking-tight text-foreground sm:text-6xl md:text-7xl">
-            search
+            fresh
             <br />
             product
             <br />
-            design.
+            inspiration.
           </h1>
           <p className="mt-8 max-w-md text-base leading-relaxed text-muted-foreground">
-            Semantic search across the product-design web. Query by material, finish, form —
-            CLIP-embedded, hybrid-ranked, editorially curated.
+            Search a wide range of products from leading design brands, updated daily.
+            Make your references stand out.
           </p>
           <Link
             href="/explore"

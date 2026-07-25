@@ -29,7 +29,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 const SITE_NAME = "Product Inspo";
 const SITE_DESCRIPTION =
-  "Search the product-design web with natural language. Semantic search across editorial coverage from Dezeen, Yanko Design, Core77, Cool Hunting, Gessato and more — filter by material, finish, form, not tags.";
+  "Fresh product inspiration. Search a wide range of products from leading design brands, updated daily. Semantic search by material, finish and form.";
 
 export const metadata: Metadata = {
   title: {
