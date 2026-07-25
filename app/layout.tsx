@@ -27,7 +27,7 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500", "700"],
 });
 
-const SITE_NAME = "INSPO";
+const SITE_NAME = "Product Inspo";
 const SITE_DESCRIPTION =
   "Search the product-design web with natural language. Semantic search across editorial coverage from Dezeen, Yanko Design, Core77, Cool Hunting, Gessato and more — filter by material, finish, form, not tags.";
 

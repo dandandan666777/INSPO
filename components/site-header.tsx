@@ -15,7 +15,7 @@ export async function SiteHeader() {
             refreshWhenOn="/explore"
             className="flex min-h-11 flex-shrink-0 items-center font-mono text-[13px] font-semibold uppercase tracking-[0.18em] text-accent lg:min-h-0"
           >
-            INSPO
+            PRODUCT INSPO
           </RefreshLink>
           <div className="flex items-center gap-2 sm:contents">
             <Link

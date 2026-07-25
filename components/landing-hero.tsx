@@ -13,7 +13,7 @@ export async function LandingHero() {
       <div className="grid gap-12 lg:grid-cols-2 lg:items-start">
         <div>
           <div className="mb-8 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-            Inspo · Search.001 · 2026
+            Product Inspo · Search.001 · 2026
           </div>
           <h1 className="text-5xl font-bold leading-[0.95] tracking-tight text-foreground sm:text-6xl md:text-7xl">
             search

@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { BackLink } from '@/components/back-link';
 import { DetailSaveButton } from '@/components/detail-save-button';
 import { SiteHeader } from '@/components/site-header';
 import { getItemById } from '@/lib/search';
@@ -43,12 +43,7 @@ export default async function ItemPage({ params }: PageProps) {
     <>
       <SiteHeader />
       <main className="mx-auto max-w-6xl px-6 py-8">
-        <Link
-          href="/explore"
-          className="mb-4 -ml-2 inline-flex min-h-11 items-center gap-1 px-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground lg:min-h-0 lg:ml-0 lg:mb-6 lg:px-0"
-        >
-          [← Back to search]
-        </Link>
+        <BackLink fallback="/explore" />
 
         <div className="mb-4 flex items-center justify-between border-b border-border pb-3 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
           <span>Item · #{padId(item.id)}</span>

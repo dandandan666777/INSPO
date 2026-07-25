@@ -14,7 +14,7 @@ export async function LandingHeader() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-3 font-mono text-[11px] uppercase tracking-[0.18em]">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <Link href="/" className="inline-flex min-h-11 items-center font-semibold text-accent lg:min-h-0">
-            INSPO
+            PRODUCT INSPO
           </Link>
           <span className="text-muted-foreground">·</span>
           <span className="text-muted-foreground">v1.0</span>
