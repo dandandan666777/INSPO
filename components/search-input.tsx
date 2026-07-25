@@ -1,13 +1,14 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useTransition } from 'react';
 
 export function SearchInput() {
   const router = useRouter();
   const params = useSearchParams();
   const currentQuery = params.get('q') ?? '';
   const [value, setValue] = useState(currentQuery);
+  const [pending, startTransition] = useTransition();
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -21,7 +22,9 @@ export function SearchInput() {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const trimmed = value.trim();
-    router.push(trimmed ? `/explore?q=${encodeURIComponent(trimmed)}` : '/explore');
+    startTransition(() => {
+      router.push(trimmed ? `/explore?q=${encodeURIComponent(trimmed)}` : '/explore');
+    });
   }
 
   return (
@@ -30,7 +33,15 @@ export function SearchInput() {
         aria-hidden
         className="pointer-events-none font-mono text-sm text-accent"
       >
-        {'>'}
+        {pending ? (
+          <span className="inline-flex gap-0.5">
+            <span className="animate-[pulse_1.4s_ease-in-out_infinite]">·</span>
+            <span className="animate-[pulse_1.4s_ease-in-out_0.2s_infinite]">·</span>
+            <span className="animate-[pulse_1.4s_ease-in-out_0.4s_infinite]">·</span>
+          </span>
+        ) : (
+          '>'
+        )}
       </span>
       <input
         ref={inputRef}
@@ -40,7 +51,8 @@ export function SearchInput() {
         onChange={(event) => setValue(event.target.value)}
         placeholder="search product design…"
         aria-label="Search product design inspiration"
-        className="h-11 w-full border border-border bg-card px-3 font-mono text-base text-foreground placeholder:text-muted-foreground focus:border-foreground focus:outline-none sm:h-10 sm:text-sm"
+        disabled={pending}
+        className="h-11 w-full border border-border bg-card px-3 font-mono text-base text-foreground placeholder:text-muted-foreground focus:border-foreground focus:outline-none disabled:opacity-70 sm:h-10 sm:text-sm"
       />
     </form>
   );
