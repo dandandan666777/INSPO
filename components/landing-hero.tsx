@@ -10,7 +10,7 @@ export async function LandingHero() {
   ]);
   return (
     <main className="mx-auto max-w-7xl px-6 py-16">
-      <div className="grid gap-12 lg:grid-cols-2 lg:items-start">
+      <div className="grid gap-10 lg:grid-cols-2 lg:gap-12 lg:items-start">
         <div>
           <div className="mb-8 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
             Product Inspo · Search.001 · 2026
@@ -32,30 +32,32 @@ export async function LandingHero() {
           >
             Start ↗
           </Link>
-
-          <div className="mt-14 grid grid-cols-2 gap-y-4 border-t border-border pt-6 font-mono text-[11px] uppercase tracking-[0.15em]">
-            <div>
-              <div className="text-muted-foreground">Corpus</div>
-              <div className="mt-1 text-sm font-semibold text-foreground">{count} items</div>
-            </div>
-            <div>
-              <div className="text-muted-foreground">Sources</div>
-              <div className="mt-1 text-sm font-semibold text-foreground">
-                {sources.length} publications
-              </div>
-            </div>
-            <div>
-              <div className="text-muted-foreground">Model</div>
-              <div className="mt-1 text-sm font-semibold text-foreground">CLIP ViT-L/14</div>
-            </div>
-            <div>
-              <div className="text-muted-foreground">Rank</div>
-              <div className="mt-1 text-sm font-semibold text-foreground">Vector + BM25</div>
-            </div>
-          </div>
         </div>
 
-        <HeroCollage items={items} />
+        <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1">
+          <HeroCollage items={items} />
+        </div>
+
+        <div className="grid grid-cols-2 gap-y-4 border-t border-border pt-6 font-mono text-[11px] uppercase tracking-[0.15em] lg:col-start-1 lg:row-start-2 lg:mt-4">
+          <div>
+            <div className="text-muted-foreground">Corpus</div>
+            <div className="mt-1 text-sm font-semibold text-foreground">{count} items</div>
+          </div>
+          <div>
+            <div className="text-muted-foreground">Sources</div>
+            <div className="mt-1 text-sm font-semibold text-foreground">
+              {sources.length} publications
+            </div>
+          </div>
+          <div>
+            <div className="text-muted-foreground">Model</div>
+            <div className="mt-1 text-sm font-semibold text-foreground">CLIP ViT-L/14</div>
+          </div>
+          <div>
+            <div className="text-muted-foreground">Rank</div>
+            <div className="mt-1 text-sm font-semibold text-foreground">Vector + BM25</div>
+          </div>
+        </div>
       </div>
     </main>
   );
