@@ -6,6 +6,7 @@ import {
   signInAction,
   signUpAction,
 } from '@/lib/auth-actions';
+import { ROLE_OPTIONS } from '@/lib/roles';
 
 type Mode = 'signin' | 'signup' | 'reset';
 
@@ -22,6 +23,7 @@ export function SignInModal({
   const [mode, setMode] = useState<Mode>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -48,7 +50,7 @@ export function SignInModal({
         if (result.ok) onSuccess();
         else setError(result.error);
       } else if (mode === 'signup') {
-        const result = await signUpAction(email, password);
+        const result = await signUpAction(email, password, role);
         if (result.ok) {
           setInfo('Check your inbox to confirm your email, then sign in.');
         } else setError(result.error);
@@ -129,6 +131,30 @@ export function SignInModal({
                 aria-label="Password"
                 className="h-11 w-full border border-border bg-card px-3 font-mono text-base text-foreground placeholder:text-muted-foreground focus:border-foreground focus:outline-none disabled:opacity-60 sm:text-sm"
               />
+            </div>
+          )}
+          {mode === 'signup' && (
+            <div>
+              <label className="mb-1 block font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                You are · pick one
+              </label>
+              <select
+                required
+                disabled={pending}
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                aria-label="Your role"
+                className="h-11 w-full appearance-none border border-border bg-card px-3 font-mono text-base text-foreground focus:border-foreground focus:outline-none disabled:opacity-60 sm:text-sm"
+              >
+                <option value="" disabled>
+                  Choose one…
+                </option>
+                {ROLE_OPTIONS.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
             </div>
           )}
           <button
