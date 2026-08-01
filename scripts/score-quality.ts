@@ -1,13 +1,19 @@
 import { embedText } from '../lib/embeddings';
 import { supabaseAdmin } from '../lib/supabase';
 
-// Kept intentionally narrow — one positive + one game negative — because the
-// broader 4-negative experiment (see migration 0010) tanked precision by
-// hiding real product shots with people or text in them. Outlier categories
-// beyond games are handled by surgical title-pattern deletes in migration
-// 0011 instead.
+// Broader negative than the previous "video game screenshot" — targets the
+// editorial-magazine noise (people/portraits, architectural interiors,
+// CGI/fantasy artwork) that was still leaking through. The 2026-08 pass
+// deleted 6 items in these categories manually; this prompt is what would
+// have caught them at scoring time.
+//
+// Kept as a SINGLE negative because migration 0010's 4-negative experiment
+// tanked precision by hiding real product shots with people or text. If this
+// prompt itself proves too aggressive, tighten it (e.g. drop "or a person")
+// and rerun.
 const POSITIVE_PROMPT = 'a professional product design photograph on a clean background';
-const NEGATIVE_PROMPT = 'a video game screenshot with cartoon graphics and pixelated UI';
+const NEGATIVE_PROMPT =
+  'an editorial photograph of a person, an architectural interior, or a stylized digital illustration';
 
 async function main() {
   console.log(`Embedding reference prompts…`);
